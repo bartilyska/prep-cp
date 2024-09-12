@@ -1,8 +1,13 @@
 #include<iostream>
+#include<cmath>
+//#include<bits/stdc++.h>
 using namespace std;
 void solve()
 {
-    cout<<"HI"<<endl;
+    int n;
+    cin>>n;
+    int p=sqrt(n);
+    cout<<(p*p==n ? true : false)<<endl;
 }
 int main()
 {
