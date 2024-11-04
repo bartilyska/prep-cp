@@ -11,6 +11,119 @@
 using namespace std;
 using ll = long long int;
 
+
+class TrieNode {
+public:
+    TrieNode* children[26];
+    bool isEnd;
+
+    TrieNode() : isEnd(false) {
+        for (int i = 0; i < 26; i++) {
+            children[i] = nullptr;
+        }
+    }
+};
+
+class Trie {
+private:
+    TrieNode* root;
+public:
+    Trie() 
+    {
+        root = new TrieNode();
+    }
+    void insert(string& word)
+    {
+        TrieNode* node = root;
+        for (char litera : word) 
+        {
+            int index = litera - 'a';
+            if (node->children[index] == nullptr)
+            {
+                node->children[index] = new TrieNode();
+            }
+            node = node->children[index];
+        }
+        node->isEnd = true;
+    }
+    
+    bool search(string& word) {
+        TrieNode* node = root;
+        for (char c : word) {
+            int index = c - 'a';
+            if (node->children[index] == nullptr) {
+                return false;
+            }
+            node = node->children[index];
+        }
+        return node->isEnd;
+    }
+    
+    bool startsWith(string& prefix) {
+        TrieNode* node = root;
+        for (char c : prefix) {
+            int index = c - 'a';
+            if (node->children[index] == nullptr) {
+                return false;
+            }
+            node = node->children[index];
+        }
+        return true;
+    }
+};
+
+class DSU {
+private:
+    std::vector<int> parent;
+    std::vector<int> size; // Size of each set
+
+public:
+    DSU(int n) {
+        parent.resize(n);
+        size.resize(n, 1); // Initial size of each set is 1
+        for (int i = 0; i < n; i++) {
+            parent[i] = i; // Initially, each element is its own set
+        }
+    }
+
+    void make_set(int v) {
+        parent[v] = v;
+        size[v] = 1; // Single element set
+    }
+
+    int find_set(int v) {
+        if (v != parent[v]) {
+            parent[v] = find_set(parent[v]); // Path compression
+        }
+        return parent[v];
+    }
+
+    void union_sets(int a, int b) {
+        a = find_set(a);
+        b = find_set(b);
+        if (a != b) {
+            // Union by size
+            if (size[a] < size[b]) {
+                parent[a] = b;
+                size[b] += size[a]; // Update size of new root
+            } else {
+                parent[b] = a;
+                size[a] += size[b]; // Update size of new root
+            }
+        }
+    }
+
+    bool are_connected(int a, int b) {
+        return find_set(a) == find_set(b);
+    }
+
+    // Method to get the size of the set containing element `v`
+    int get_size(int v) {
+        int root = find_set(v);
+        return size[root]; // Return the size of the set's root
+    }
+};
+
 class SegmentTree {
     vector<ll> tree;
     int size; //4 razy mniejszy niz tree size
@@ -29,7 +142,7 @@ private:
         int mid = left + (right - left) / 2;
         buildTree(array, 2 * treeIndex + 1, left, mid);
         buildTree(array, 2 * treeIndex + 2, mid + 1, right);
-        tree[treeIndex] = tree[2 * treeIndex + 1] + tree[2 * treeIndex + 2];//tu zmieniac
+        tree[treeIndex] = tree[2 * treeIndex + 1] + tree[2 * treeIndex + 2];//tu zmieniac(jak inna operacja niz suma)
     }
 
     long long int query(int treeIndex, int left, int right, int queryLeft, int queryRight) {
@@ -69,8 +182,7 @@ public:
         update(0, 0, size - 1, index, newValue);
     }
     //seg.update(zmien-1, upd); do update gdy 1-indexed
-    void wypisz()
-    {
+    void wypisz(){
         for (int i = 0; i < 4 * size; i++)
         {
             cout << tree[i] << endl;
@@ -80,32 +192,32 @@ public:
 
 void solve()
 {
-   int n,q;
-cin >> n>>q;
-vector<int>v(n);
-for (int i = 0; i < n; i++)
-{
-    cin >> v[i];
-}
-SegmentTree seg(v);
-while (q--)
-{
-    int k;
-    cin >> k;
-    if (k == 1)
+    int n,q;
+    cin >> n>>q;
+    vector<int>v(n);
+    for (int i = 0; i < n; i++)
     {
-        int zmien, upd;
-        cin >>  zmien >> upd;
-        seg.update(zmien-1, upd);
+        cin >> v[i];
     }
-    else
+    SegmentTree seg(v);
+    while (q--)
     {
-        int l, r;
-        cin >> l >> r;
-        long long int odp=  seg.query(l-1, r-1);
-        cout << odp << endl;
+        int k;
+        cin >> k;
+        if (k == 1)
+        {
+            int zmien, upd;
+            cin >>  zmien >> upd;
+            seg.update(zmien-1, upd);
+        }
+        else
+        {
+            int l, r;
+            cin >> l >> r;
+            long long int odp=  seg.query(l-1, r-1);
+            cout << odp << endl;
+        }
     }
-}
 }
 int main()
 {
