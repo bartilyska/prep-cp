@@ -74,8 +74,8 @@ public:
 
 class DSU {
 private:
-    std::vector<int> parent;
-    std::vector<int> size; // Size of each set
+    vector<int> parent;
+    vector<int> size; // Size of each set
 
 public:
     DSU(int n) {
@@ -125,7 +125,7 @@ public:
 };
 
 class SegmentTree {
-    vector<ll> tree;
+    vector<int> tree;
     int size; //4 razy mniejszy niz tree size
 public:
     SegmentTree(vector<int>& array) {
@@ -190,34 +190,70 @@ public:
     }
 };
 
+const int mod=1e9+7;
+class Combinatorics
+{
+private:
+    int n;
+    vector<long long int>  silnia,inv;
+public:
+    Combinatorics(int m)
+    {
+        n=m;
+        silnia.resize(m);
+        inv.resize(m);
+    }
+    long long int C(int n, int k)
+    {
+        if (k > n) return 0;
+        return ((((silnia[n] * inv[k]) % mod) * inv[n - k]) % mod);
+    }
+    void wypelnijSilnieModulo()
+    {
+        silnia[0] = 1;
+        for ( int i = 1; i < n ; i++)
+        {
+            silnia[i] = (silnia[i - 1] * i) % mod;
+        }
+    }
+    void wypelnijInvModulo()
+    {
+        inv[n - 1] = szybkapotega(silnia[n - 1], mod - 2);
+        for ( int i = n - 2; i >= 0; i--) 
+        {
+            inv[i] = (inv[i + 1] * (i + 1)) % mod;
+        }
+    }
+    long long int szybkapotega(long long int a, long long int b)
+    {
+        long long int odp = 1;
+        while (b >= 1)
+        {
+            if (b % 2 == 1)
+                odp = (odp * a) % mod;
+            b = b / 2;
+            a = (a * a) % mod;
+        }
+        return odp;
+    }
+};
+
 void solve()
 {
-    int n,q;
-    cin >> n>>q;
-    vector<int>v(n);
-    for (int i = 0; i < n; i++)
+    vector<int>v(10);
+    for(int i=0;i<10;i++)
     {
-        cin >> v[i];
+        v[i]=i+1;
     }
     SegmentTree seg(v);
-    while (q--)
-    {
-        int k;
-        cin >> k;
-        if (k == 1)
-        {
-            int zmien, upd;
-            cin >>  zmien >> upd;
-            seg.update(zmien-1, upd);
-        }
-        else
-        {
-            int l, r;
-            cin >> l >> r;
-            long long int odp=  seg.query(l-1, r-1);
-            cout << odp << endl;
-        }
-    }
+    seg.wypisz();
+    DSU dsu(100);
+    Combinatorics comb(100);
+    comb.wypelnijSilnieModulo();
+    comb.wypelnijInvModulo();
+    int n = 65, k = 40;
+    long long result = comb.C(n, k);
+    cout<<result<<endl;
 }
 int main()
 {
