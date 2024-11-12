@@ -238,30 +238,104 @@ public:
     }
 };
 
+const int N = 100;//moze byc 10^7
+void generujpierwsze()
+{
+    vector<int> lp(N+1);
+    vector<int> pr; //wektor do trzymania liczb pierwszych
+    for (int i=2; i <= N; i++) 
+    {
+        if (lp[i] == 0) 
+        {
+            lp[i] = i;
+            pr.push_back(i);
+        }
+        for (int j = 0; i * pr[j] <= N; ++j) {
+            lp[i * pr[j]] = pr[j];
+            if (pr[j] == lp[i]) {
+                break;
+            }
+        }
+    }
+}
+
+//Z-function do znajdowania ilosci wystapien slowa w innym slowie
+vector<int>calculateZ(string &s)
+{
+    int l=0,r=0;
+    int n=s.length();
+    vector<int>z(n);
+    for(int i=1;i<n;i++)
+    {
+        if(i>r){
+            //i is outside the current [l, r] interval
+            l=r=i;
+            while(r<n && s[r]==s[r-l])
+                r++;
+            z[i]=r-l;
+            r--;
+        }
+        else{
+            //i is inside the current [l, r] interval
+            int rel_ind=i-l;
+            if(z[rel_ind]+i<=r)
+                z[i]=z[rel_ind];
+            else{
+                l=i;
+                while(r<n && s[r]==s[r-l])
+                    r++;
+                z[i]=r-l;
+                r--;
+            }
+        }
+    }
+    return z;
+}
+
+vector<int> findAllOccurrences(const string &pattern, const string &text) {
+    string combined = pattern + "$" + text; //dolar nie moze byc uzywany w tych slowach
+    vector<int> z = calculateZ(combined);
+    vector<int> result;
+    int m = pattern.length();
+    //znaleziono pattern gdy z[i] == m do wektora wrzucane indeksy poczatkow tych slow od 0
+    for (int i = m + 1; i < z.size(); ++i) {
+        if (z[i] == m) {
+            result.push_back(i - m - 1);
+        }
+    }
+    for(auto x:result)
+    {
+        cout<<x<<endl;
+    }
+    return result;
+}
+
 void solve()
 {
-    vector<int>v(10);
-    for(int i=0;i<10;i++)
-    {
-        v[i]=i+1;
-    }
-    SegmentTree seg(v);
-    seg.wypisz();
-    DSU dsu(100);
-    Combinatorics comb(100);
-    comb.wypelnijSilnieModulo();
-    comb.wypelnijInvModulo();
-    int n = 65, k = 40;
-    long long result = comb.C(n, k);
-    cout<<result<<endl;
+    //vector<int>v(10);
+    //for(int i=0;i<10;i++)
+    //{
+    //    v[i]=i+1;
+    //}
+    //SegmentTree seg(v);
+    //seg.wypisz();
+    //DSU dsu(100);
+    //Combinatorics comb(100);
+    //comb.wypelnijSilnieModulo();
+    //comb.wypelnijInvModulo();
+    //int n = 65, k = 40;
+    //long long result = comb.C(n, k);
+    //cout<<result<<endl;
+    //generujpierwsze();
+    findAllOccurrences("ab","ababcab");
 }
 int main()
 {
-    int t;
-    cin>>t;
-    while(t--)
-    {
+    //int t;
+    //cin>>t;
+    //while(t--)
+    //{
         solve();
-    }
+    //}
     return 0;
 }
