@@ -1,16 +1,13 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <cmath>
-#include <map>
-#include <queue>
-#include <set>
-#include <numeric>
-#include <stack>
-#include <limits.h>
+#include <bits/stdc++.h>
 using namespace std;
 using ll = long long int;
 
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+// Function to generate a random integer in the range [l, r]
+int rd(int l, int r) {
+    return uniform_int_distribution<int>(l, r)(rng);
+}
 
 class TrieNode {
 public:
@@ -336,5 +333,7 @@ int main()
     //{
         solve();
     //}
+    cout<<rd(-100,100)<<endl;
+    cout<<rd(-4323454,543534654)<<endl;
     return 0;
 }
