@@ -303,29 +303,33 @@ vector<int> findAllOccurrences(const string &pattern, const string &text) {
             result.push_back(i - m - 1);
         }
     }
+    return result;
 }
 
 void solve()
 {
-    //vector<int>v(10);
-    //for(int i=0;i<10;i++)
-    //{
-    //    v[i]=i+1;
-    //}
-    //SegmentTree seg(v);
-    //seg.wypisz();
-    //DSU dsu(100);
-    //Combinatorics comb(100);
-    //comb.wypelnijSilnieModulo();
-    //comb.wypelnijInvModulo();
-    //int n = 65, k = 40;
-    //long long result = comb.C(n, k);
-    //cout<<result<<endl;
-    //generujpierwsze();
-    findAllOccurrences("ab","ababcab");
+    vector<int>v(10);
+    for(int i=0;i<10;i++)
+    {
+        v[i]=i+1;
+    }
+    SegmentTree seg(v);
+    seg.wypisz();
+    DSU dsu(100);
+    Combinatorics comb(100);
+    comb.wypelnijSilnieModulo();
+    comb.wypelnijInvModulo();
+    int n = 65, k = 40;
+    long long result = comb.C(n, k);
+    cout<<result<<endl;
+    generujpierwsze();
+    vector<int> odp = findAllOccurrences("ab","ababcab");
+    for(auto x:odp)
+        cout<<x<<endl;
 }
 int main()
 {
+    ios::sync_with_stdio(false);
     //int t;
     //cin>>t;
     //while(t--)
