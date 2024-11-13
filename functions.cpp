@@ -303,11 +303,6 @@ vector<int> findAllOccurrences(const string &pattern, const string &text) {
             result.push_back(i - m - 1);
         }
     }
-    for(auto x:result)
-    {
-        cout<<x<<endl;
-    }
-    return result;
 }
 
 void solve()
